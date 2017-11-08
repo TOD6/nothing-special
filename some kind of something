@@ -1,0 +1,137 @@
+import java.util.Scanner;
+
+public class Main {
+    static final int MAP_SIZE = 9;
+    static final char HERO = '@';
+    static final char ENEMY = '&';
+    static final char ESCAPE= 'E';
+    static int heroX, heroY;
+    static int enemyXa, enemyYa;
+    static int enemyXb, enemyYb;
+    static int enemyXc, enemyYc;
+    static int enemyXd, enemyYd;
+    static int enemyXe, enemyYe;
+    static int escapeX, escapeY;
+    static final char WALL = '#';
+    static int enemy = 0;
+    static int e = 0;
+    static char[][] map = new char[MAP_SIZE][MAP_SIZE];
+
+    public static void generateNewMap() {
+        heroX = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        heroY = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyXa = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyYa = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyXb = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyYb = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyXc = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyYc = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyXd = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyYd = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyXe = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        enemyYe = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        escapeX = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        escapeY = (int) (Math.random() * (MAP_SIZE - 2) + 1);
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                map[i][j] = '.';
+            }
+        }
+        for (int i = 0; i < MAP_SIZE; i++) {
+            map[0][i] = '#';
+            map[MAP_SIZE - 1][i] = '#';
+            map[i][0] = '#';
+            map[i][MAP_SIZE - 1] = '#';
+        }
+        map[heroX][heroY] = HERO;
+        map[enemyXa][enemyXa] = ENEMY;
+        map[enemyXb][enemyXb] = ENEMY;
+        map[enemyXc][enemyXc] = ENEMY;
+        map[enemyXd][enemyXd] = ENEMY;
+        map[enemyXe][enemyYe] = ENEMY;
+        map[escapeX][escapeY] = ESCAPE;
+        showMap();
+    }
+
+    public static void showMap() {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                System.out.print(map[i][j]);
+            }
+            System.out.println();
+        }
+    }
+    public static void check(){
+        enemy = 0;
+        for(int i = 0;i<map.length;i++)
+            for (int j = 0;j<map[i].length;j++)
+                if(map[i][j]=='&')
+                    enemy++;
+    }
+    public static void move(char c) {
+        int y = 0;
+        y++;
+        map[heroX][heroY] = '.';
+        switch (c) {
+            case 'w': heroX--; break;
+            case 's': heroX++; break;
+            case 'a': heroY--; break;
+            case 'd': heroY++; break;
+        }
+        if (map[heroX][heroY] == '#') {
+                System.out.println("you can't go through walls");
+                if(c=='w')
+                    heroX++;
+                else if(c=='d')
+                    heroY--;
+                else if(c=='s')
+                    heroX--;
+                else if(c=='a')
+                    heroY++;
+                map[heroX][heroY] = HERO;
+        }
+        else if(map[heroX][heroY] == 'E'){
+            check();
+            if (enemy==0)
+                map[heroX][heroY] = HERO;
+            else {
+                System.out.println(enemy+" enemy still here");
+                if(c=='w')
+                    heroX++;
+                else if(c=='d')
+                    heroY--;
+                else if(c=='s')
+                    heroX--;
+                else if(c=='a') {
+                    heroY++;
+                }
+                map[heroX][heroY] = HERO;
+                map[escapeX][escapeY] = ESCAPE;
+
+            }
+        }
+        else map[heroX][heroY] = HERO;
+    }
+    public static void showGreetings() {
+        System.out.println("Greetings, little tutorial before you start\n#-walls you can't go through walls\n&-is your enemy just kill them all and get to escape\nE-it's escape you need firstly kill all your enemies\n\"w\" - move forward\n\"s\" - move down\n\"a\" - move left\n\"d\" - move right\n\"q\" - to quit\n");
+    }
+    public static void done(){
+        if (heroX == escapeX && heroY == escapeY)
+            System.out.println("Congratulations you win!\nNow about your prize\nFREE CAKE\nYou can get it in:\nERROR CAKE IS A LIE\nPress q to quit\nBut you still can walk around\nWith no reason\nAND NO ESCAPE");
+    }
+    public static void main(String[] args) {
+        showGreetings();
+        generateNewMap();
+        Scanner in = new Scanner(System.in);
+        char input;
+        do {
+            input = in.next().charAt(0);
+            move(input);
+            showMap();
+            done();
+            }
+            while (input != 'q');
+            if (input == 'q')
+                System.out.println("Goodbye");
+    }
+}
